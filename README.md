@@ -66,29 +66,18 @@ flowchart TD
 
 ### Primary baseline
 
-| Metric | Value |
-|---|---:|
-| Stage 1 Accuracy | 0.510 |
-| Stage 1 F1 | 0.600 |
-| Stage 2 R2 | 0.025 |
-| Stage 2 RMSE | 1.279 |
-| Stage 2 MAE | 0.940 |
-| Stage 2 Spearman rho | 0.052 |
-| Stage 2 Zone Accuracy | 0.368 |
-| Stage 2 Direction Accuracy | 0.509 |
-| Stage 2 Bias (m3/h) | -0.068 |
+The primary baseline is reported with the following metrics:
+- Stage 1: Accuracy, F1.
+- Stage 2: R2, RMSE, MAE, Spearman rho, zone accuracy, direction accuracy, and bias (m3/h).
+
+This gives a balanced view of classification quality, regression error, rank consistency, directional reliability, and systematic over- or under-prediction.
 
 ### SSL sensitivity run
 
-| Metric | Value |
-|---|---:|
-| Stage 2 R2 | 0.040 |
-| Stage 2 RMSE | 1.270 |
-| Stage 2 MAE | 0.918 |
-| Stage 2 Spearman rho | 0.139 |
-| Stage 2 Zone Accuracy | 0.386 |
-| Stage 2 Direction Accuracy | 0.456 |
-| Stage 2 Bias (m3/h) | -0.077 |
+The SSL sensitivity analysis is evaluated with the same Stage 2 metric suite:
+- R2, RMSE, MAE, Spearman rho, zone accuracy, direction accuracy, and bias (m3/h).
+
+Using the same metric family allows a direct, like-for-like comparison between the baseline and SSL-enhanced variants.
 
 ## Groundwater potential classes
 
