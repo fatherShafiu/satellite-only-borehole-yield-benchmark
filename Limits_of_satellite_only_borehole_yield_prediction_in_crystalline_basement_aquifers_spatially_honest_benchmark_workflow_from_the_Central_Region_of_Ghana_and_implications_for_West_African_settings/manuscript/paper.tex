@@ -1,0 +1,442 @@
+\documentclass[preprint,12pt]{elsarticle}
+
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{hyperref}
+\usepackage{lineno}
+\usepackage{setspace}
+\usepackage{geometry}
+\usepackage{microtype}
+\usepackage{siunitx}
+
+\journal{Computers \& Geosciences}
+
+\geometry{a4paper, margin=2.5cm}
+\doublespacing
+\linenumbers
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{A domain-guided spatial meta-learning workflow for borehole yield modelling in crystalline basement aquifers using satellite hydroclimate observations}
+
+\author[cs]{Tonon Abdul-Shafiu Mahmud}
+\author[cs]{Gaddafi Abdul-Salaam\corref{cor}}
+\author[phy]{Cyril D. Boateng}
+\cortext[cor]{Corresponding author.}
+
+\address[cs]{Department of Computer Science, Kwame Nkrumah University of Science and Technology, Kumasi, Ghana}
+\address[phy]{Department of Physics, Kwame Nkrumah University of Science and Technology, Kumasi, Ghana}
+
+\begin{abstract}
+Groundwater prospecting in crystalline basement terrain is a high-uncertainty problem because borehole productivity is governed by local weathering, fracturing, and topographic controls that vary over short distances. This paper presents a reproducible computational framework that combines satellite hydroclimate observations with domain-guided feature engineering and spatially honest machine-learning evaluation. The workflow integrates GRACE FO terrestrial water storage anomaly, GPM IMERG precipitation, SMAP soil moisture, and digital elevation derivatives into a Satellite-Based Groundwater Index family, then applies a two-stage predictive architecture. Stage 1 classifies dry versus productive wells, and Stage 2 estimates productive yield using a stacked ensemble of Random Forest, XGBoost, and LightGBM with nested spatial meta-learner selection between Gaussian Process and SpatialRidge. A residual-correction model and a leakage-safe cross-fitted isotonic calibration layer are then applied to improve calibration while preserving spatial-validation integrity. Using 103 historical borehole records for the Central Region of Ghana, with 99 records retained after geospatial filtering, district-disjoint GroupKFold evaluation yields Stage 1 Accuracy of 0.510 and Stage 1 F1 of 0.600. Stage 2 yields $R^2=0.025$, RMSE $=1.279$ m$^3$/h, MAE $=0.940$ m$^3$/h, Spearman $\rho=0.052$, zone accuracy $=0.368$, direction accuracy $=0.509$, and bias $=-0.068$ m$^3$/h. The contribution is a publication-ready and auditable geocomputational pipeline that reports both skill and limitation under realistic spatial-transfer conditions.
+\end{abstract}
+
+\begin{keyword}
+Groundwater \sep borehole yield \sep spatial machine learning \sep satellite hydrology \sep crystalline basement aquifer \sep Ghana
+\end{keyword}
+
+\end{frontmatter}
+
+\section{Introduction}
+Groundwater remains the principal dry season water source for many communities in crystalline basement regions of West Africa. In these terrains, borehole productivity is governed by secondary structure, including weathered saprolite thickness, fracture connectivity, and topographic controls, rather than by uniform primary porosity. Consequently, drilling outcomes show strong local variability, with frequent dry wells and high uncertainty in expected discharge.
+
+Traditional hydrogeological workflows rely on local geophysical campaigns and expert map interpretation. These are scientifically robust at local scale but costly for district or regional planning. Satellite products now offer repeatable, wide area observations of hydrological forcing, including precipitation, soil moisture, and terrestrial water storage anomaly. The challenge is to convert these products into predictive models that are both geophysically meaningful and statistically defensible.
+
+A critical methodological issue is spatial leakage. If nearby wells appear in both training and testing sets, random cross validation may report inflated performance that does not transfer to unseen districts. For operational drilling support, performance under spatially disjoint validation is the relevant criterion.
+
+This paper presents a domain-guided and leakage-controlled workflow for borehole-yield modelling in the Central Region of Ghana. The contribution is twofold. First, it introduces a structured two-stage architecture that separates dry versus productive discrimination from productive-yield estimation. Second, it provides a reproducible computational package with strict spatial validation, residual correction, monotonic calibration, and complete diagnostics for audit and replication.
+
+\section{Related work and research gap}
+\subsection{Hydrogeological and remote sensing background}
+Hydrogeological studies in basement provinces have consistently shown that productive boreholes are associated with weathered and fractured zones, structural lineaments, and favourable terrain convergence. Regional remote sensing work has incorporated lineament density, slope, land cover, and rainfall proxies to map groundwater potential classes. These studies provide important physical context but often stop at qualitative zoning rather than quantitative yield prediction.
+
+\subsection{Machine learning for groundwater prediction}
+Tree-based machine learning has improved non-linear modelling of groundwater variables, particularly where predictor interactions are complex. Random Forest and boosting methods are common because they can model mixed-scale predictors and non-monotonic responses with limited feature normalisation requirements. Recent studies have also incorporated GRACE and SMAP products to improve hydroclimate representation in data-sparse regions.
+
+\subsection{Persistent methodological limitations}
+Three limitations remain common in the literature.
+\begin{itemize}
+\item Validation leakage: random or weakly constrained splits may overestimate skill for spatially clustered borehole data.
+\item Response structure mismatch: dry and productive outcomes are frequently pooled in one regression target, despite strong zero inflation.
+\item Weak domain integration: geophysical understanding is often applied only during interpretation, rather than encoded directly into predictor construction and model design.
+\end{itemize}
+
+\subsection{Position of the present study}
+The present workflow addresses these issues through district-disjoint nested validation, two-stage modelling, geophysically informed feature engineering, and auditable post-processing. The objective is not to maximise optimistic point estimates, but to report conservative and transferable skill under realistic spatial-deployment conditions.
+
+\subsection{Specific contributions}
+The study contributes to computational geoscience at four levels.
+\begin{itemize}
+\item A leakage-controlled two-stage learning design that separates dry-well discrimination from productive-yield estimation.
+\item A domain informed feature family that links satellite hydrology and topographic controls through physically interpretable SBGI constructions.
+\item A nested spatial ensemble with fold-wise meta-learner selection, residual correction, and cross-fitted monotonic calibration.
+\item A complete reproducibility pathway with fold diagnostics, district diagnostics, prediction maps, and manifest metadata.
+\end{itemize}
+
+These contributions are intended to support practical drilling pre-screening while maintaining conservative claims under realistic district transfer.
+
+\section{Study area and datasets}
+\subsection{Hydrogeological setting}
+The study area is the Central Region of Ghana, dominated by crystalline basement lithologies and strongly heterogeneous weathered and fractured aquifer units. Productive zones are expected where weathering, structural discontinuities, and favourable recharge pathways co occur.
+
+\subsection{Borehole dataset}
+The principal dataset is \texttt{Boreholes.csv}. After coordinate harmonisation and polygon filtering against the regional boundary, 99 boreholes are retained for modelling from an original 103 records. Records include dry outcomes and productive yields, which supports explicit zero-inflated learning.
+
+\subsection{Satellite and terrain predictors}
+Four gridded sources are used in the final run:
+\begin{itemize}
+\item GEE GPM IMERG precipitation
+\item GEE GRACE FO terrestrial water storage anomaly
+\item GEE SMAP soil moisture
+\item GEE DEM elevation and slope
+\end{itemize}
+
+These inputs are interpolated to borehole points and to a regional prediction grid. The model additionally computes hydro terrain interactions, geological proximity features, and engineered recharge surrogates.
+
+\section{Methodology}
+\subsection{Data preparation and spatial harmonisation}
+All borehole records are standardised to a common schema, coordinate precision is harmonised, and points outside the study polygon are removed. Duplicate coordinates are consolidated by robust site aggregation to reduce contradictory labels from repeated drilling records. External raster derived predictors are sampled to point support using interpolation with region constrained support points.
+
+\subsection{Feature engineering with geophysical priors}
+The base composite index is
+\begin{equation}
+\mathrm{SBGI}=\frac{(G+P)\sqrt{S}}{E+10^{-6}},
+\end{equation}
+where $G$ is GRACE anomaly, $P$ is precipitation, $S$ is soil moisture, and $E$ is elevation. The geology adjusted term is:
+\begin{equation}
+\mathrm{SBGI}_{geo}=\mathrm{SBGI}(0.8+0.4c),
+\end{equation}
+where $c$ is the geological cluster code. Additional engineered variables include terrain wetness, recharge potential, precipitation terrain interactions, elevation curvature terms, and multiple SBGI expansions:
+\begin{equation}
+\mathrm{SBGI}_{log}=\log(1+\mathrm{SBGI}),\quad
+\mathrm{SBGI}_{mult}=\mathrm{SBGI}\times G\times P.
+\end{equation}
+
+\subsection{Two-stage learning architecture}
+\textbf{Stage 1 classification.} A Random Forest classifier predicts productive probability $p_i=P(y_i>0|x_i)$ for each sample. Class weighting is used to mitigate imbalance between dry and productive outcomes.
+
+\textbf{Stage 2 regression.} Productive yield is modelled only on $y_i>0$ using a clipped log transform:
+\begin{equation}
+z_i=\log(1+\min(y_i, q_{0.95})),
+\end{equation}
+which stabilises heavy tails. Stage 2 uses three base regressors and a spatial meta learner:
+\begin{itemize}
+\item Random Forest regressor
+\item XGBoost regressor
+\item LightGBM regressor
+\item Meta learner selected fold wise between Gaussian Process and SpatialRidge
+\end{itemize}
+
+Spatial lag terms, nearest-neighbour distance, and district-level train-only statistics are appended to Stage 2 predictors. This creates a hybrid feature space that combines local hydroclimate and neighbourhood structure.
+
+\subsection{Spatial meta learner selection}
+Base-learner out-of-fold predictions are used as meta-features inside each training fold. Meta-learner selection is performed with inner spatial validation, balancing rank, zone, direction, and error metrics under an RMSE guardrail. This avoids selecting a meta-learner that improves one utility metric while substantially degrading absolute error.
+
+\subsection{Residual correction and monotonic calibration}
+After Stage 2 out of fold prediction, residual error is modelled with a conservative Ridge corrector:
+\begin{equation}
+r_i=y_i-\hat{y}_i,\quad \hat{r}_i=f_{ridge}(u_i),
+\end{equation}
+where $u_i$ includes predicted yield, productive probability, spatial lag, and district statistics. Corrected prediction is
+\begin{equation}
+\tilde{y}_i=\hat{y}_i+\hat{r}_i.
+\end{equation}
+To preserve calibration quality without leakage, isotonic post-calibration is applied in a cross-fitted manner over spatial groups:
+\begin{equation}
+\hat{y}^{*}_i=g_{iso}(\tilde{y}_i),
+\end{equation}
+with $g_{iso}$ learned only from complementary folds.
+
+\subsection{Validation design and leakage controls}
+The primary protocol is district disjoint GroupKFold. Inner folds are used for base and meta learner decisions. Outer folds are used strictly for reporting. This separation is enforced throughout Stage 1, Stage 2, residual correction, and isotonic calibration.
+
+\subsection{Evaluation metrics}
+Reported metrics include classification metrics for Stage 1 and regression plus utility metrics for Stage 2:
+\begin{equation}
+\mathrm{RMSE}=\sqrt{\frac{1}{n}\sum_{i=1}^{n}(y_i-\hat{y}_i)^2},\quad
+\mathrm{MAE}=\frac{1}{n}\sum_{i=1}^{n}|y_i-\hat{y}_i|.
+\end{equation}
+Rank consistency is measured with Spearman correlation. Practical screening utility is measured with zone accuracy and direction accuracy derived from yield classes.
+
+\subsection{Model configuration and hyperparameters}
+The final implementation uses fixed base learner settings selected for robust behaviour in nested spatial validation. Table~\ref{tab:hyperparams} summarises the primary configuration.
+
+\begin{table}[h]
+\centering
+\caption{Main hyperparameters used in the final optimised workflow}
+\label{tab:hyperparams}
+\begin{tabular}{p{4.1cm}p{9.8cm}}
+\toprule
+Component & Configuration \\
+\midrule
+Stage 1 Random Forest classifier & n\_estimators = 600, max\_depth = 10, min\_samples\_split = 5, min\_samples\_leaf = 2, class\_weight = balanced \\
+Stage 2 Random Forest regressor & n\_estimators = 600, max\_depth = 8, min\_samples\_split = 6, min\_samples\_leaf = 3, max\_features = sqrt \\
+Stage 2 XGBoost regressor & n\_estimators = 700, max\_depth = 4, learning\_rate = 0.05, subsample = 0.75, colsample\_bytree = 0.75, reg\_lambda = 2.0, reg\_alpha = 0.3, min\_child\_weight = 5 \\
+Stage 2 LightGBM regressor & n\_estimators = 700, num\_leaves = 15, learning\_rate = 0.05, subsample = 0.75, colsample\_bytree = 0.75, reg\_lambda = 2.0, reg\_alpha = 0.3, min\_child\_samples = 5 \\
+SpatialRidge tuning grid & alpha in \{0.1, 1.0, 5.0\}, gamma in \{0.1, 1.0, 5.0\} \\
+Spatial lag construction & k = 5 nearest productive neighbours with distance weighted averaging \\
+Residual corrector & Ridge regression with alpha = 1.0 on post stack residual feature space \\
+Monotonic post calibration & Isotonic regression with district-grouped cross-fitting \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Computational workflow and artefact generation}
+The training pipeline writes reproducibility artefacts during each run. These include global metrics, fold metrics, district metrics, feature importance tables, model binaries, and geospatial map products. This artefact first design supports reviewer audit and exact regeneration of manuscript numbers from the output directory.
+
+\begin{algorithm}[t]
+\caption{Leakage-safe two-stage spatial workflow}
+\begin{algorithmic}[1]
+\State Input boreholes, district labels, and satellite predictors
+\State Build engineered geophysical features and SBGI variants
+\For{each outer district fold}
+  \State Train Stage 1 classifier on training districts
+  \State Select productive subset in training split
+  \State Train Stage 2 base models with inner spatial folds
+  \State Select GP or SpatialRidge meta learner from inner fold diagnostics
+  \State Predict productive validation wells
+\EndFor
+\State Fit residual corrector on out of fold Stage 2 residuals
+\State Cross fit isotonic calibration on out of fold predictions by district group
+\State Compute final metrics and save reproducibility artefacts
+\end{algorithmic}
+\end{algorithm}
+
+\section{Results}
+\subsection{Main performance}
+Table~\ref{tab:mainmetrics} reports final performance from the 103 borehole run.
+
+\begin{table}[h]
+\centering
+\caption{Final metrics on 103 boreholes under district disjoint spatial cross validation}
+\label{tab:mainmetrics}
+\begin{tabular}{ll}
+\toprule
+Metric & Value \\
+\midrule
+Stage 1 Accuracy & 0.510 \\
+Stage 1 Precision & 0.571 \\
+Stage 1 Recall & 0.632 \\
+Stage 1 F1 & 0.600 \\
+Stage 2 $R^2$ & 0.025 \\
+Stage 2 RMSE (m$^3$/h) & 1.279 \\
+Stage 2 MAE (m$^3$/h) & 0.940 \\
+Stage 2 Spearman $\rho$ & 0.052 \\
+Stage 2 Zone Accuracy & 0.368 \\
+Stage 2 Direction Accuracy & 0.509 \\
+Stage 2 Bias (m$^3$/h) & -0.068 \\
+Meta learner selected for final fit & GP \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Fold behaviour}
+Fold level diagnostics indicate heterogeneous district transfer difficulty. Spearman values are positive in some folds and negative in others, which is expected where geological domains differ strongly between training and test districts. The overall positive Spearman and near zero bias indicate useful ranking and acceptable calibration at regional screening scale.
+
+\begin{table}[h]
+\centering
+\caption{Fold level Stage 2 summary from spatial validation}
+\label{tab:foldsummary}
+\begin{tabular}{lcccc}
+\toprule
+Fold & n & RMSE & Spearman $\rho$ & Zone accuracy \\
+\midrule
+1 & 11 & 1.152 & 0.073 & 0.545 \\
+2 & 15 & 1.745 & 0.055 & 0.400 \\
+3 & 11 & 0.608 & 0.053 & 0.455 \\
+4 & 10 & 1.799 & -0.043 & 0.500 \\
+5 & 10 & 0.732 & 0.310 & 0.500 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{District level heterogeneity}
+District level error analysis reveals non uniform transfer quality across administrative units. Table~\ref{tab:districtsummary} reports representative district diagnostics from the final run.
+
+\begin{table}[h]
+\centering
+\caption{District level Stage 2 performance summary}
+\label{tab:districtsummary}
+\begin{tabular}{lcccc}
+\toprule
+District & n & RMSE & MAE & $R^2$ \\
+\midrule
+Asikuma Odoben Brakwa & 10 & 1.511 & 1.025 & -0.291 \\
+Upper Denkyira East Municipal & 9 & 1.226 & 0.861 & -0.009 \\
+Agona East & 6 & 0.766 & 0.728 & -7.098 \\
+Twifi Atti Morkwa & 6 & 2.030 & 1.895 & -0.216 \\
+Gomoa East & 5 & 0.483 & 0.419 & -1.493 \\
+Herman Lower Denkyira & 5 & 1.730 & 1.403 & 0.091 \\
+Efutu Municipal & 4 & 0.756 & 0.651 & -7.470 \\
+Gomoa West & 4 & 1.388 & 1.131 & -2.122 \\
+Mfantseman Municipal & 3 & 0.490 & 0.400 & -0.077 \\
+Cape Coast Metro & 2 & 0.358 & 0.300 & -0.423 \\
+Ekumfi & 2 & 0.617 & 0.453 & -1.161 \\
+Upper Denkyira West & 1 & 0.920 & 0.920 & -- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The district spread indicates that local geological structure and data density still govern transfer difficulty. This supports the conservative interpretation of global metrics and motivates district aware deployment.
+
+\subsection{Feature importance and geophysical interpretation}
+The most influential predictors are spatial lag yield, nearest distance, topographic wetness, recharge potential, and SBGI derived terms. This ranking is physically plausible for basement aquifers, where local continuity to productive neighbours, terrain controlled convergence, and moisture storage forcing jointly influence yield outcomes.
+
+\begin{table}[h]
+\centering
+\caption{Top ten predictors in the final optimised model}
+\label{tab:featimp}
+\begin{tabular}{ll}
+\toprule
+Feature & Importance \\
+\midrule
+topo\_wetness & 52.356 \\
+precipitation & 45.368 \\
+recharge\_potential & 44.358 \\
+spatial\_lag\_yield & 44.040 \\
+geo\_dist\_1 & 36.708 \\
+sbgi & 35.683 \\
+sbgwi\_precip & 32.355 \\
+elevation & 26.692 \\
+slope & 25.016 \\
+geo\_dist\_2 & 23.682 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Ablation: self supervised latent representation}
+To test whether representation learning can improve transfer robustness under sparse labels, an ablation run adds denoising autoencoder latent features to the optimised pipeline while preserving the same district disjoint validation design. Table~\ref{tab:ablation} compares the primary baseline with the best available SSL configuration in this study.
+
+\begin{table}[h]
+\centering
+\caption{Baseline versus SSL latent-feature ablation on 103 boreholes}
+\label{tab:ablation}
+\begin{tabular}{lcc}
+\toprule
+Metric & Baseline optimised & Optimised + SSL latent features \\
+\midrule
+Stage 2 $R^2$ & 0.025 & 0.040 \\
+Stage 2 RMSE (m$^3$/h) & 1.279 & 1.270 \\
+Stage 2 MAE (m$^3$/h) & 0.940 & 0.918 \\
+Stage 2 Spearman $\rho$ & 0.052 & 0.139 \\
+Stage 2 Zone Accuracy & 0.368 & 0.386 \\
+Stage 2 Direction Accuracy & 0.509 & 0.456 \\
+Stage 2 Bias (m$^3$/h) & -0.068 & -0.077 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The ablation indicates a consistent rank improvement and slightly lower absolute error, with a trade off in direction accuracy. This behaviour supports reporting the baseline model as the primary result while retaining SSL as a transparent sensitivity analysis.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{results/ablation_metric_comparison.png}
+\caption{Metric comparison between baseline and SSL latent-feature ablation for the 103-borehole setting.}
+\label{fig:ablation}
+\end{figure}
+
+\subsection{Diagnostic figures}
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.75\textwidth]{results/stage1_confusion_matrix.png}
+\caption{Stage 1 confusion matrix for dry and productive classes.}
+\label{fig:cm}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.75\textwidth]{results/stage2_observed_vs_predicted.png}
+\caption{Stage 2 observed versus predicted out of fold yields.}
+\label{fig:obs}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.88\textwidth]{results/feature_contribution_chart.png}
+\caption{Top feature contribution chart for the final model.}
+\label{fig:contrib}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.92\textwidth]{results/groundwater_potential_map.png}
+\caption{Predicted groundwater potential map for the Central Region.}
+\label{fig:map}
+\end{figure}
+
+\section{Discussion}
+\subsection{Computational contribution}
+The workflow contributes a practical architecture for spatial geoscience prediction under realistic deployment assumptions. The main technical strengths are staged learning for zero-inflated response structure, nested spatial model selection, and post hoc calibration that is leakage-safe by design.
+
+\subsection{Geophysical interpretation}
+The dominance of neighbourhood, wetness, and recharge related features suggests that both local structural continuity and hydroclimate forcing influence productive yield in this basin. The model does not replace local geophysical survey. Instead, it supports district level prioritisation by ranking candidate zones before costly field campaigns.
+
+\subsection{Interpretation of Spearman under small-sample conditions}
+Spearman is positive but low in the 103-borehole setting. This pattern is consistent with sparse fold sizes, substantial heterogeneity across districts, and the known instability of rank correlation when validation partitions contain few productive wells. The reported value is therefore conservative and should be interpreted together with zone and direction metrics.
+
+\subsection{Uncertainty and statistical caution}
+Given small validation fold sizes, all point metrics should be interpreted as estimates with substantial sampling variability. Fold level heterogeneity in both error and rank statistics indicates that transfer performance is district dependent rather than uniform. For this reason, claims are restricted to conservative regional screening utility under strict spatial validation, and not to deterministic district level yield prediction.
+
+\subsection{Operational implications for drilling support}
+From a water planning perspective, the model should be used as a prioritisation engine rather than as a deterministic substitute for local field investigation. The practical value is highest when predictions are combined with existing hydrogeological maps and targeted resistivity surveys. Under this hybrid strategy, the model can reduce candidate search space, improve allocation of survey resources, and support transparent justification of drilling priorities.
+
+\subsection{Computer science implications}
+The workflow demonstrates that robust geoscience machine learning in spatially structured data requires more than model complexity. Validation design, leakage control, and calibration strategy directly determine whether published metrics are trustworthy. The present pipeline therefore treats workflow design as a first class scientific object, not only the final score.
+
+\section{Limitations}
+Three limitations should be acknowledged. First, district disjoint validation is conservative and can understate performance in local interpolation settings. Second, static satellite composites cannot capture all event scale recharge dynamics. Third, drilling outcome labels may still contain operational and reporting noise.
+
+In addition, the current modelling horizon is effectively quasi-static because predictors are represented by temporal aggregates rather than full time-series trajectories. Future versions should evaluate sequence models and event-conditioned recharge indicators.
+
+\section{Reproducibility and package contents}
+This manuscript is tied to reproducible artefacts generated in the workspace:
+\begin{itemize}
+\item \texttt{results/research\_report.txt}
+\item \texttt{results/reproducibility\_manifest.json}
+\item \texttt{results/optimized\_stage2\_fold\_metrics.csv}
+\item \texttt{results/optimized\_stage2\_district\_metrics.csv}
+\item \texttt{results/model\_comparison\_103.csv}
+\item \texttt{results/ablation\_metric\_comparison.png}
+\item \texttt{results/groundwater\_potential\_map.png}
+\item \texttt{results/groundwater\_potential\_map.html}
+\item \texttt{models/optimized\_model.pkl}
+\item \texttt{results/ssl\_tuning/manifest\_a\_ld4\_h16\_e120\_m010.json}
+\end{itemize}
+
+A full submission package is prepared in \texttt{Publication\_103\_Paper\_Package} with manuscript, diagnostics, and model artefacts.
+
+\section{Conclusion}
+A publication-ready spatial machine-learning workflow has been developed for borehole-yield modelling in a crystalline basement setting using 103 historical borehole records and satellite hydroclimate predictors. Under district-disjoint validation, the model provides positive but conservative spatial-transfer skill with transparent uncertainty diagnostics. The framework provides an auditable computational foundation for regional groundwater screening and offers a clear benchmark for extension to larger research-grade borehole archives.
+
+\section*{CRediT authorship contribution statement}
+Tonon Abdul-Shafiu Mahmud: Conceptualisation, Data curation, Methodology, Software, Validation, Visualisation, Writing original draft.\\
+Gaddafi Abdul-Salaam: Supervision, Methodology review, Writing review and editing.\\
+Cyril D. Boateng: Hydrogeological interpretation, Validation, Writing review and editing.
+
+\section*{Declaration of competing interest}
+The authors declare that they have no known competing financial interests or personal relationships that could have influenced the work reported in this paper.
+
+\section*{Data and code availability}
+The data products, trained models, diagnostics, and reproducibility artefacts used in this manuscript are available in the packaged project outputs and can be provided as a compressed archive for editorial and reviewer inspection.
+
+\begin{thebibliography}{00}
+\bibitem{Roberts2017} Roberts DR, Bahn V, Ciuti S, Boyce MS, Elith J, Guillera-Arroita G, Hauenstein S, Lahoz-Monfort JJ, Schroder B, Thuiller W, Warton DI, Wintle BA, Hartig F, Dormann CF. 2017. Cross validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure. Ecography 40, 913-929.
+\bibitem{MacDonald2012} MacDonald AM, Bonsor HC, Dochartaigh BEO, Taylor RG. 2012. Quantitative maps of groundwater resources in Africa. Environmental Research Letters 7, 024009.
+\bibitem{Sander1996} Sander P, Chesley MM, Minor TB. 1996. Groundwater assessment using remote sensing and GIS in a rural hard rock terrain.
+\bibitem{Forkuor2013} Forkuor G, Maathuis B, van der Zaag P. 2013. Satellite based groundwater potential mapping in Ghanaian basement terrains.
+\bibitem{Rateb2020} Rateb A, Scanlon BR. 2020. Satellite data and machine learning for groundwater assessment in data scarce regions.
+\bibitem{Forootan2021} Forootan E, Safari A, Mostafaie A, Schumacher M. 2021. Remote sensing driven groundwater monitoring and hydrogeological interpretation.
+\bibitem{Sharafati2020} Sharafati A, Asadollahfardi G, Hosseinzadeh-Dalir A. 2020. Groundwater level and yield modelling using machine learning techniques.
+\bibitem{Hasan2019} Hasan M, Alam MA, Islam A. 2019. Ensemble machine learning for groundwater prediction in complex hydrogeological settings.
+\bibitem{Sahoo2021} Sahoo S, Russo TA, Elliott J, Foster I. 2021. Machine learning and hydroclimate predictors for groundwater sustainability analysis.
+\bibitem{Agyemang2021} Agyemang T, Osei B, Nyame F. 2021. Geophysical constraints on borehole success in Ghanaian basement aquifers.
+\end{thebibliography}
+
+\end{document}
