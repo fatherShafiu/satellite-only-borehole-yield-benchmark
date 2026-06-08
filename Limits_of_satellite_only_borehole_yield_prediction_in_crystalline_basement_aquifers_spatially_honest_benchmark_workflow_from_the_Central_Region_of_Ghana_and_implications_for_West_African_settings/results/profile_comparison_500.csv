@@ -1,4 +1,0 @@
-profile,boreholes_file,stage1_accuracy,stage1_precision,stage1_recall,stage1_f1,stage2_r2_spatial_cv,stage2_rmse_spatial_cv,stage2_mae_spatial_cv,stage2_spearman_rho,stage2_zone_accuracy,stage2_direction_accuracy,stage2_bias_m3h,meta_learner,base_learners
-manuscript,research_grade_boreholes_500.csv,0.921,0.921,1.000,0.959,-0.137,1.296,0.824,,,,,SpatialRidge,RF+XGBoost
-optimized_before_fixes,research_grade_boreholes_500.csv,0.921,0.921,1.000,0.959,-0.172,1.316,0.866,0.018,0.491,0.511,-0.410,GP,RF+XGBoost+LightGBM
-optimized_after_generalization_fixes,research_grade_boreholes_500.csv,0.921,0.921,1.000,0.959,-0.036,1.237,0.806,0.145,0.561,0.568,-0.345,SpatialRidge,RF+XGBoost+LightGBM

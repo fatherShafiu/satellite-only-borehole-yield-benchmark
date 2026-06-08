@@ -1,3 +1,0 @@
-Model,Stage1_Accuracy,Stage1_Precision,Stage1_Recall,Stage1_F1,Stage2_R2,Stage2_RMSE,Stage2_MAE,Stage2_Spearman,Stage2_Zone_Accuracy,Stage2_Direction_Accuracy,Stage2_Bias
-Optimized_baseline,0.510,0.571,0.632,0.600,0.025,1.279,0.940,0.052,0.368,0.509,-0.068
-Optimized_SSL_ablation,0.500,0.562,0.632,0.595,0.040,1.270,0.918,0.139,0.386,0.456,-0.077
