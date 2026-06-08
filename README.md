@@ -1,6 +1,6 @@
 # Central Region Ghana Groundwater Benchmark
 
-Publication-ready benchmark workflow for borehole yield prediction in crystalline basement aquifers (Central Region, Ghana), prepared for a Computers and Geosciences submission.
+Publication-ready benchmark workflow for borehole yield prediction in crystalline basement aquifers (Central Region, Ghana).
 
 ## Why this repository exists
 
