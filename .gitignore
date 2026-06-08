@@ -1,17 +1,2 @@
-# Keep repository focused on the C&G submission package only
-*
-
-# Keep gitignore itself tracked
-!.gitignore
-
-# Track only the publication-ready folder
-!Limits_of_satellite_only_borehole_yield_prediction_in_crystalline_basement_aquifers_spatially_honest_benchmark_workflow_from_the_Central_Region_of_Ghana_and_implications_for_West_African_settings/
-!Limits_of_satellite_only_borehole_yield_prediction_in_crystalline_basement_aquifers_spatially_honest_benchmark_workflow_from_the_Central_Region_of_Ghana_and_implications_for_West_African_settings/**
-
-# Keep raw borehole records out of git even inside the package folder
-Limits_of_satellite_only_borehole_yield_prediction_in_crystalline_basement_aquifers_spatially_honest_benchmark_workflow_from_the_Central_Region_of_Ghana_and_implications_for_West_African_settings/data/Boreholes.csv
-
-# Explicitly ignore legacy/other bundles
-archived/
-archieved/
-GitHub_Ready_103_Package/
+# Ignore raw borehole dataset
+Boreholes.csv

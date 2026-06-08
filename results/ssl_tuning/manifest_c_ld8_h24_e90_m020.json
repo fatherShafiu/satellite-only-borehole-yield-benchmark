@@ -1,0 +1,112 @@
+{
+  "created_utc": "2026-06-07T10:12:10.010569+00:00",
+  "profile": "optimized_ssl",
+  "random_state": 42,
+  "data_sources": {
+    "precipitation": "GEE_GPM_IMERG.csv",
+    "grace": "GEE_GRACE_FO.csv",
+    "soil_moisture": "GEE_SMAP_SOIL_MOISTURE.csv",
+    "dem": "GEE_DEM.csv"
+  },
+  "features": [
+    "grace_anomaly",
+    "soil_moisture",
+    "elevation",
+    "slope",
+    "precipitation",
+    "sbgi",
+    "sbgi_geology",
+    "topo_wetness",
+    "elev_precip",
+    "slope_precip",
+    "elevation_squared",
+    "recharge_potential",
+    "geo_cluster",
+    "geo_dist_0",
+    "geo_dist_1",
+    "geo_dist_2",
+    "high_terrain",
+    "steep_slope",
+    "voltaian_proxy",
+    "birimian_proxy",
+    "tarkwaian_proxy",
+    "ssl_latent_0",
+    "ssl_latent_1",
+    "ssl_latent_2",
+    "ssl_latent_3",
+    "ssl_latent_4",
+    "ssl_latent_5",
+    "ssl_latent_6",
+    "ssl_latent_7",
+    "sbgwi_log",
+    "sbgwi_precip",
+    "sbgwi_grace",
+    "sbgwi_topo",
+    "sbgwi_geo_mult"
+  ],
+  "metrics": {
+    "Stage1 Accuracy": "0.469",
+    "Stage1 Precision": "0.541",
+    "Stage1 Recall": "0.579",
+    "Stage1 F1": "0.559",
+    "Stage2 R\u00b2 (Spatial CV)": "-0.049",
+    "Stage2 RMSE (Spatial CV)": "1.327",
+    "Stage2 MAE (Spatial CV)": "0.977",
+    "Stage2 Spearman \u03c1": "0.076",
+    "Stage2 Zone Accuracy": "0.351",
+    "Stage2 Direction Acc.": "0.526",
+    "Stage2 Bias (m\u00b3/h)": "-0.074",
+    "Meta-learner": "GP",
+    "Base learners": "RF + XGBoost + LightGBM",
+    "SSL Latent Features": "8",
+    "SSL latent_dim": "8",
+    "SSL hidden_dim": "24",
+    "SSL epochs": "90",
+    "SSL mask_prob": "0.200",
+    "SSL learning_rate": "0.00100"
+  },
+  "input_files": [
+    {
+      "path": "Boreholes.csv",
+      "exists": true,
+      "size_bytes": 10232,
+      "modified_utc": "2025-08-08T09:42:02+00:00",
+      "sha256": "8742d01062c20da1349d7b225d605d1bc6b137d43efa402e89873afd2741ae7d"
+    },
+    {
+      "path": "GEE_GPM_IMERG.csv",
+      "exists": true,
+      "size_bytes": 5364,
+      "modified_utc": "2026-06-06T12:16:59.530578+00:00",
+      "sha256": "211b7ea1078c4addf624002848a6331cdaf0bfedabccfd7d44339c4f74881857"
+    },
+    {
+      "path": "GEE_GRACE_FO.csv",
+      "exists": true,
+      "size_bytes": 6053,
+      "modified_utc": "2026-06-06T12:16:59.542029+00:00",
+      "sha256": "81d7eef92651c8e01a7267fc831acdbb346ed63aacdd7f99853930927b742268"
+    },
+    {
+      "path": "GEE_SMAP_SOIL_MOISTURE.csv",
+      "exists": true,
+      "size_bytes": 5499,
+      "modified_utc": "2026-06-06T12:16:59.546919+00:00",
+      "sha256": "1329fe2325706ad2e12360e5d377a2186f6869d75c6a38a8a034877edd9874b4"
+    },
+    {
+      "path": "GEE_DEM.csv",
+      "exists": true,
+      "size_bytes": 5958,
+      "modified_utc": "2026-06-06T12:16:59.554898+00:00",
+      "sha256": "1e5f3be326d7045540cfddc498d3ff926b1fcdf5f72199472fc7183ce0f40180"
+    },
+    {
+      "path": "central_region_ghana.shp",
+      "exists": true,
+      "size_bytes": 56300,
+      "modified_utc": "2025-07-29T21:26:24+00:00",
+      "sha256": "14b6113506ff94684254af5b27a888a9c695ee74fec7eb34665595371c504190"
+    }
+  ]
+}

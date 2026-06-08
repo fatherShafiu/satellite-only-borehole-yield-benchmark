@@ -1,0 +1,527 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "run-manuscript-500",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"model.py",
+				"--profile",
+				"manuscript",
+				"--boreholes-file",
+				"research_grade_boreholes_500.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-optimized-500",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"model.py",
+				"--profile",
+				"optimized",
+				"--boreholes-file",
+				"research_grade_boreholes_500.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-optimized-500-after-fix",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"model.py",
+				"--profile",
+				"optimized",
+				"--boreholes-file",
+				"research_grade_boreholes_500.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-optimized-500-district-adapt",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"model.py",
+				"--profile",
+				"optimized",
+				"--boreholes-file",
+				"research_grade_boreholes_500.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-manuscript-500-after-stage2-fixes",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"model.py",
+				"--profile",
+				"manuscript",
+				"--boreholes-file",
+				"research_grade_boreholes_500.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-optimized-500-final-aligned",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"model.py",
+				"--profile",
+				"optimized",
+				"--boreholes-file",
+				"research_grade_boreholes_500.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-optimized-500-calibrated",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"model.py",
+				"--profile",
+				"optimized",
+				"--boreholes-file",
+				"research_grade_boreholes_500.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-optimized-500-calibrated-v2",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"model.py",
+				"--profile",
+				"optimized",
+				"--boreholes-file",
+				"research_grade_boreholes_500.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-optimized-500-gp-fixed",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"model.py",
+				"--profile",
+				"optimized",
+				"--boreholes-file",
+				"research_grade_boreholes_500.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-optimized-500-composite-select",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"model.py",
+				"--profile",
+				"optimized",
+				"--boreholes-file",
+				"research_grade_boreholes_500.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-optimized-500-guardrailed-composite",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"model.py",
+				"--profile",
+				"optimized",
+				"--boreholes-file",
+				"research_grade_boreholes_500.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-optimized-103-boreholes",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"model.py",
+				"--profile",
+				"optimized",
+				"--boreholes-file",
+				"Boreholes.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-publication-103-boreholes",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"model.py",
+				"--profile",
+				"publication",
+				"--boreholes-file",
+				"Boreholes.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-gee-extract-103",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"gee_extract_satellite_support.py",
+				"--boreholes-file",
+				"Boreholes.csv",
+				"--out-dir",
+				".",
+				"--grid-step-deg",
+				"0.2",
+				"--start-date",
+				"2018-01-01",
+				"--end-date",
+				"2020-12-31"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-ee-auth-python",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"-c",
+				"import ee; ee.Authenticate(); print('auth-complete')"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-ee-auth-python-2",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"-c",
+				"import ee; ee.Authenticate(); print(\"auth-complete\")"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-ee-auth-now",
+			"type": "shell",
+			"command": "py",
+			"args": [
+				"-3",
+				"-c",
+				"import ee; ee.Authenticate(); print(\"auth-complete\")"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-gee-extract-103-authenticated",
+			"type": "shell",
+			"command": "py",
+			"args": [
+				"-3",
+				"gee_extract_satellite_support.py",
+				"--boreholes-file",
+				"Boreholes.csv",
+				"--out-dir",
+				".",
+				"--grid-step-deg",
+				"0.2",
+				"--start-date",
+				"2018-01-01",
+				"--end-date",
+				"2020-12-31"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-gee-extract-103-project",
+			"type": "shell",
+			"command": "py",
+			"args": [
+				"-3",
+				"gee_extract_satellite_support.py",
+				"--boreholes-file",
+				"Boreholes.csv",
+				"--out-dir",
+				".",
+				"--grid-step-deg",
+				"0.2",
+				"--start-date",
+				"2018-01-01",
+				"--end-date",
+				"2020-12-31",
+				"--ee-project",
+				"ee-groundwater-prediction"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-gee-extract-103-project-v2",
+			"type": "shell",
+			"command": "py",
+			"args": [
+				"-3",
+				"gee_extract_satellite_support.py",
+				"--boreholes-file",
+				"Boreholes.csv",
+				"--out-dir",
+				".",
+				"--grid-step-deg",
+				"0.2",
+				"--start-date",
+				"2018-01-01",
+				"--end-date",
+				"2020-12-31",
+				"--ee-project",
+				"ee-groundwater-prediction"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-optimized-103-with-gee",
+			"type": "shell",
+			"command": "py",
+			"args": [
+				"-3",
+				"model.py",
+				"--profile",
+				"optimized",
+				"--boreholes-file",
+				"Boreholes.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-gee-extract-103-historical-window",
+			"type": "shell",
+			"command": "py",
+			"args": [
+				"-3",
+				"gee_extract_satellite_support.py",
+				"--boreholes-file",
+				"Boreholes.csv",
+				"--out-dir",
+				".",
+				"--grid-step-deg",
+				"0.2",
+				"--start-date",
+				"2010-01-01",
+				"--end-date",
+				"2016-12-31",
+				"--ee-project",
+				"ee-groundwater-prediction"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-optimized-103-with-gee-historical",
+			"type": "shell",
+			"command": "py",
+			"args": [
+				"-3",
+				"model.py",
+				"--profile",
+				"optimized",
+				"--boreholes-file",
+				"Boreholes.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-ranked-103",
+			"type": "shell",
+			"command": "py",
+			"args": [
+				"-3",
+				"model.py",
+				"--profile",
+				"ranked",
+				"--boreholes-file",
+				"Boreholes.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-optimized-103-residual",
+			"type": "shell",
+			"command": "py",
+			"args": [
+				"-3",
+				"model.py",
+				"--profile",
+				"optimized",
+				"--boreholes-file",
+				"Boreholes.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-optimized-103-residual-v2",
+			"type": "shell",
+			"command": "py",
+			"args": [
+				"-3",
+				"model.py",
+				"--profile",
+				"optimized",
+				"--boreholes-file",
+				"Boreholes.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-optimized-103-zone-tuned",
+			"type": "shell",
+			"command": "py",
+			"args": [
+				"-3",
+				"model.py",
+				"--profile",
+				"optimized",
+				"--boreholes-file",
+				"Boreholes.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-optimized-500-zone-tuned",
+			"type": "shell",
+			"command": "py",
+			"args": [
+				"-3",
+				"model.py",
+				"--profile",
+				"optimized",
+				"--boreholes-file",
+				"research_grade_boreholes_500.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-optimized-500-zone-tuned-crossfit",
+			"type": "shell",
+			"command": "py",
+			"args": [
+				"-3",
+				"model.py",
+				"--profile",
+				"optimized",
+				"--boreholes-file",
+				"research_grade_boreholes_500.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-optimized-103-final-paper",
+			"type": "shell",
+			"command": "py",
+			"args": [
+				"-3",
+				"model.py",
+				"--profile",
+				"optimized",
+				"--boreholes-file",
+				"Boreholes.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-optimized-500-final-paper",
+			"type": "shell",
+			"command": "py",
+			"args": [
+				"-3",
+				"model.py",
+				"--profile",
+				"optimized",
+				"--boreholes-file",
+				"research_grade_boreholes_500.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "run-optimized-103-switchback",
+			"type": "shell",
+			"command": "py",
+			"args": [
+				"-3",
+				"model.py",
+				"--profile",
+				"optimized",
+				"--boreholes-file",
+				"Boreholes.csv"
+			],
+			"isBackground": false
+		},
+		{
+			"label": "ssl-tune-a",
+			"type": "shell",
+			"command": "py -3 model.py --profile optimized_ssl --boreholes-file Boreholes.csv --ssl-latent-dim 4 --ssl-hidden-dim 16 --ssl-epochs 120 --ssl-mask-prob 0.10 --ssl-lr 0.001; if (!(Test-Path results\\ssl_tuning)) { New-Item -ItemType Directory -Path results\\ssl_tuning | Out-Null }; Copy-Item results\\reproducibility_manifest.json results\\ssl_tuning\\manifest_a_ld4_h16_e120_m010.json -Force; Copy-Item results\\research_report.txt results\\ssl_tuning\\report_a_ld4_h16_e120_m010.txt -Force",
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "ssl-tune-b",
+			"type": "shell",
+			"command": "py -3 model.py --profile optimized_ssl --boreholes-file Boreholes.csv --ssl-latent-dim 6 --ssl-hidden-dim 24 --ssl-epochs 120 --ssl-mask-prob 0.10 --ssl-lr 0.001; if (!(Test-Path results\\ssl_tuning)) { New-Item -ItemType Directory -Path results\\ssl_tuning | Out-Null }; Copy-Item results\\reproducibility_manifest.json results\\ssl_tuning\\manifest_b_ld6_h24_e120_m010.json -Force; Copy-Item results\\research_report.txt results\\ssl_tuning\\report_b_ld6_h24_e120_m010.txt -Force",
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "ssl-tune-c",
+			"type": "shell",
+			"command": "py -3 model.py --profile optimized_ssl --boreholes-file Boreholes.csv --ssl-latent-dim 8 --ssl-hidden-dim 24 --ssl-epochs 90 --ssl-mask-prob 0.20 --ssl-lr 0.001; if (!(Test-Path results\\ssl_tuning)) { New-Item -ItemType Directory -Path results\\ssl_tuning | Out-Null }; Copy-Item results\\reproducibility_manifest.json results\\ssl_tuning\\manifest_c_ld8_h24_e90_m020.json -Force; Copy-Item results\\research_report.txt results\\ssl_tuning\\report_c_ld8_h24_e90_m020.txt -Force",
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "ssl-best-activate",
+			"type": "shell",
+			"command": "py -3 model.py --profile optimized_ssl --boreholes-file Boreholes.csv --ssl-latent-dim 4 --ssl-hidden-dim 16 --ssl-epochs 120 --ssl-mask-prob 0.10 --ssl-lr 0.001",
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "run-optimized-baseline-final",
+			"type": "shell",
+			"command": "python model.py --profile optimized --boreholes-file Boreholes.csv",
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "ssl-best-clean-capture",
+			"type": "shell",
+			"command": "python model.py --profile optimized_ssl --boreholes-file Boreholes.csv --ssl-latent-dim 4 --ssl-hidden-dim 16 --ssl-epochs 120 --ssl-mask-prob 0.10 --ssl-lr 0.001; if (!(Test-Path results\\ssl_tuning)) { New-Item -ItemType Directory -Path results\\ssl_tuning | Out-Null }; Copy-Item results\\reproducibility_manifest.json results\\ssl_tuning\\manifest_ssl_best_4_16_120_010.json -Force; Copy-Item results\\research_report.txt results\\ssl_tuning\\report_ssl_best_4_16_120_010.txt -Force",
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "sync-github-package-images",
+			"type": "shell",
+			"command": "python -c \"from pathlib import Path; import shutil; src='results'; dst='GitHub_Ready_103_Package/images'; files=['groundwater_potential_map.png','groundwater_potential_map.html','yield_heatmap.png','stage1_confusion_matrix.png','stage2_observed_vs_predicted.png','feature_contribution_chart.png','feature_importances.png','ablation_metric_comparison.png']; Path(dst).mkdir(parents=True, exist_ok=True); [shutil.copy2(Path(src)/f, Path(dst)/f) for f in files]; print('synced', len(files), 'files')\"",
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "sync-github-package-images-ps",
+			"type": "shell",
+			"command": "$src = 'results'; $dst = 'GitHub_Ready_103_Package\\images'; $files = @('groundwater_potential_map.png','groundwater_potential_map.html','yield_heatmap.png','stage1_confusion_matrix.png','stage2_observed_vs_predicted.png','feature_contribution_chart.png','feature_importances.png','ablation_metric_comparison.png'); foreach ($file in $files) { Copy-Item (Join-Path $src $file) (Join-Path $dst $file) -Force }; Write-Output \"synced $($files.Count) files\"",
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "refresh-map-exports",
+			"type": "shell",
+			"command": "python model.py --profile optimized --boreholes-file Boreholes.csv",
+			"problemMatcher": [],
+			"group": "build"
+		}
+	]
+}

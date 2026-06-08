@@ -1,0 +1,12 @@
+{
+  "features": [
+    "latitude",
+    "longitude"
+  ],
+  "target": "yield",
+  "model_type": "RandomForestRegressor",
+  "performance": {
+    "mse": 2.580066097199999,
+    "r2": -0.1084305571868922
+  }
+}
