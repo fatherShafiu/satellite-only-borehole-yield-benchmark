@@ -1,7 +1,36 @@
 {
+  "title": "satellite-only-borehole-yield-benchmark",
+  "description": "Code, hyperparameters, and reproducibility artefacts for: Limits of satellite-only borehole yield prediction in crystalline basement aquifers: a spatially honest benchmark workflow from the Central Region of Ghana.",
   "creators": [
-    {"name": "Mahmud, Tonon Abdul-Shafiu", "affiliation": "Kwame Nkrumah University of Science and Technology"},
-    {"name": "Abdul-Salaam, Gaddafi", "affiliation": "Kwame Nkrumah University of Science and Technology"},
-    {"name": "Boateng, Cyril D.", "affiliation": "Kwame Nkrumah University of Science and Technology"}
+    {
+      "name": "Mahmud, Tonon Abdul-Shafiu",
+      "affiliation": "Department of Computer Science, College of Science, Kwame Nkrumah University of Science and Technology, Kumasi, Ghana"
+    },
+    {
+      "name": "Abdul-Salaam, Gaddafi",
+      "affiliation": "Department of Computer Science, College of Science, Kwame Nkrumah University of Science and Technology, Kumasi, Ghana"
+    },
+    {
+      "name": "Boateng, Cyril D.",
+      "affiliation": "Department of Physics, College of Science, Kwame Nkrumah University of Science and Technology, Kumasi, Ghana"
+    }
+  ],
+  "license": "MIT",
+  "upload_type": "software",
+  "keywords": [
+    "groundwater",
+    "borehole yield prediction",
+    "crystalline basement aquifer",
+    "spatial cross-validation",
+    "GRACE-FO",
+    "machine learning benchmark",
+    "Ghana"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/fatherShafiu/satellite-only-borehole-yield-benchmark",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
   ]
 }
