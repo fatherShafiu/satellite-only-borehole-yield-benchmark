@@ -5,9 +5,9 @@ Publication-ready benchmark workflow for borehole yield prediction in crystallin
 ## Why this repository exists
 
 This package is designed to be:
-- Reproducible: code, metadata, manifests, and reports are bundled.
-- Spatially honest: district-disjoint validation is used to reduce leakage.
-- Publication-oriented: manuscript, figures, and model outputs are provided in one place.
+1. Reproducible: code, metadata, manifests, and reports are bundled.2
+2. Spatially honest: district-disjoint validation is used to reduce leakage.
+3. Publication-oriented: manuscript, figures, and model outputs are provided in one place.
 
 ## Repository map
 
